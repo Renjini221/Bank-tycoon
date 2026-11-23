@@ -66,8 +66,12 @@ window.addEventListener('beforeunload', () => clock.setSpeed(0))
 const timer = window.setInterval(clock.tick, 125)
 if (import.meta.hot) import.meta.hot.dispose(() => clearInterval(timer))
 
-const url = import.meta.env.VITE_SUPABASE_URL?.trim()
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim()
+const configuredUrl = import.meta.env.VITE_SUPABASE_URL?.trim()
+const configuredKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim()
+// Use the hosted game's public client settings as a pair when no override is set.
+const useHostedProject = window.location.origin === 'https://bank-tycoon-ashen.vercel.app' && !configuredUrl && !configuredKey
+const url = useHostedProject ? 'https://mddbtxwdueocbfgcapyt.supabase.co' : configuredUrl
+const key = useHostedProject ? 'sb_publishable_miPQ5jW1aRk5SCs1tGe1uA_P9-S-SCx' : configuredKey
 export const cloudConfigured = Boolean(url && key && !url.includes('your-project') && !key.includes('your-publishable'))
 export function useAccount() {
   const [loading, setLoading] = useState(cloudConfigured)
